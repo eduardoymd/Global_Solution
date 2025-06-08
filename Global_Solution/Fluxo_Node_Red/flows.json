@@ -1,0 +1,165 @@
+[
+    {
+        "id": "a794e71d06bc01b8",
+        "type": "tab",
+        "label": "",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "43d00de58e8f719a",
+        "type": "mqtt in",
+        "z": "a794e71d06bc01b8",
+        "name": "MQTT Entrada",
+        "topic": "globalsolution/medidor/nivel",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt_broker",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 460,
+        "y": 260,
+        "wires": [
+            [
+                "e3c0103ba7227f57",
+                "28e33535b596cd63"
+            ]
+        ]
+    },
+    {
+        "id": "e3c0103ba7227f57",
+        "type": "debug",
+        "z": "a794e71d06bc01b8",
+        "name": "Debug JSON",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 670,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "28e33535b596cd63",
+        "type": "function",
+        "z": "a794e71d06bc01b8",
+        "name": "Extrair dados",
+        "func": "return [\n  { payload: msg.payload.nivel_cm },\n  { payload: msg.payload.volume_litros },\n  { payload: msg.payload.horario }\n];",
+        "outputs": 3,
+        "noerr": 0,
+        "x": 670,
+        "y": 280,
+        "wires": [
+            [
+                "a2e1fa24d563cb07"
+            ],
+            [
+                "423f6bcbcff62034"
+            ],
+            [
+                "2a16bc9462934d12"
+            ]
+        ]
+    },
+    {
+        "id": "a2e1fa24d563cb07",
+        "type": "ui_text",
+        "z": "a794e71d06bc01b8",
+        "group": "dashboard_group",
+        "order": 0,
+        "width": 3,
+        "height": 1,
+        "name": "Nível (cm)",
+        "label": "Nível (cm)",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 890,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "423f6bcbcff62034",
+        "type": "ui_gauge",
+        "z": "a794e71d06bc01b8",
+        "name": "Volume (L)",
+        "group": "dashboard_group",
+        "order": 1,
+        "width": 6,
+        "height": 4,
+        "gtype": "gage",
+        "title": "Volume (L)",
+        "label": "Litros",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "3500",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "1580",
+        "seg2": "2380",
+        "diff": false,
+        "className": "",
+        "x": 900,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "2a16bc9462934d12",
+        "type": "ui_text",
+        "z": "a794e71d06bc01b8",
+        "group": "dashboard_group",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "name": "Horário",
+        "label": "Horário",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 890,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "mqtt_broker",
+        "type": "mqtt-broker",
+        "name": "HiveMQ Public",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "dashboard_group",
+        "type": "ui_group",
+        "name": "Medições",
+        "tab": "dashboard_tab",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "dashboard_tab",
+        "type": "ui_tab",
+        "name": "Sensor Dashboard",
+        "icon": "dashboard",
+        "order": 1
+    }
+]

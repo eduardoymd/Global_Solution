@@ -84,9 +84,9 @@ O MQTT (Message Queuing Telemetry Transport) é um protocolo leve de mensagens u
 ![image](https://github.com/user-attachments/assets/743804f1-669d-4db2-ac3a-459c539ad1dc)
 
 ## Código-fonte
-Este projeto utiliza um **ESP32**, um **sensor ultrassônico**, um **display LCD**, **LEDs indicadores**, **RTC** e conexão **Wi-Fi** para monitorar o nível de água em um reservatório, exibindo os dados localmente e enviando-os para a plataforma **ThingSpeak**.
+### 📡 Wokwi com ThingSpeak
 ---
-## ⚙️ Componentes Utilizados
+### ⚙️ Componentes Utilizados
 
 - ESP32
 - Sensor Ultrassônico (HC-SR04)
@@ -96,7 +96,7 @@ Este projeto utiliza um **ESP32**, um **sensor ultrassônico**, um **display LCD
 - Conexão Wi-Fi
 - Plataforma ThingSpeak
 ---
-## ⚙️ Bibliotecas Utilizadas
+### ⚙️ Bibliotecas Utilizadas
 
 - `Wire.h` - Comunicação I2C
 - `LiquidCrystal_I2C.h` - Controle do display LCD
@@ -104,7 +104,7 @@ Este projeto utiliza um **ESP32**, um **sensor ultrassônico**, um **display LCD
 - `WiFi.h` - Conexão com a rede Wi-Fi
 - `HTTPClient.h` - Envio de dados via HTTP
 ---
-## ⚙️ Funcionamento
+### ⚙️ Funcionamento
 
 1. O **sensor ultrassônico** mede a distância da água até o topo do reservatório.
 2. A altura da água é usada para calcular o **volume** em litros.
@@ -116,7 +116,7 @@ Este projeto utiliza um **ESP32**, um **sensor ultrassônico**, um **display LCD
      - Vermelho: acima de 300 cm
    - Enviados para o **ThingSpeak** com horário atual via RTC.
 ---
-## ⚙️ ThingSpeak
+### ⚙️ ThingSpeak
 O projeto envia os seguintes dados para o ThingSpeak:
 - `field1`: Nível da água (cm)
 - `field2`: Volume calculado (litros)
@@ -124,14 +124,58 @@ O projeto envia os seguintes dados para o ThingSpeak:
 - `field4`: Repetição do nível (pode ser usado como gauge)
 **API Key:** `N18H1NFNM1SSJCND`
 ---
-## ⚙️ Fórmulas utilizadas
-### Volume do reservatório (cilindro):
+### ⚙️ Fórmulas utilizadas
+##### Volume do reservatório (cilindro):
 ```cpp
 volume_cm3 = π * raio² * altura
 volume_litros = volume_cm3 / 1000
 ```
 
+## Código-fonte
+###☁️ Wokwi com Node-RED via MQTT
+---
+### ⚙️ Componentes Utilizados
+- ESP32
+- Sensor Ultrassônico (HC-SR04)
+- RTC (DS3231)
+- Display LCD 16x2 com I2C
+- LEDs (verde, amarelo, vermelho)
+- Broker MQTT público: [HiveMQ](http://broker.hivemq.com)
+- Wi-Fi
+  
+### ⚙️ Bibliotecas Utilizadas
+- `Wire.h` – Comunicação I2C
+- `LiquidCrystal_I2C.h` – Controle do LCD
+- `RTClib.h` – Relógio de tempo real (RTC)
+- `WiFi.h` – Conexão com rede Wi-Fi
+- `PubSubClient.h` – Comunicação com servidor MQTT
+- `ArduinoJson.h` – Criação e envio de objetos JSON
+---
+### ⚙️ Fluxo de Funcionamento
 
+1. O **sensor ultrassônico** mede a distância da água até o topo.
+2. A distância é convertida em:
+   - **Nível da água** (em cm)
+   - **Volume** (em litros)
+3. Os dados são:
+   - Exibidos no **LCD**
+   - Indicados por **LEDs**
+   - Enviados via **MQTT** no formato JSON
+---
+### ⚙️ Tópico MQTT
+- **Broker:** `broker.hivemq.com`
+- **Tópico:** `globalsolution/medidor/nivel`
+- **Porta:** 1883 (padrão MQTT)
+---
+### ⚙️ Formato da mensagem JSON enviada:
+```json
+{
+  "nivel_cm": 182.34,
+  "volume_litros": 14344.67,
+  "distancia_cm": 182.34,
+  "horario": "14:26:05"
+}
+```
 
 
 

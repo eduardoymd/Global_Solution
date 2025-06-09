@@ -47,7 +47,7 @@ O ThingSpeak é uma plataforma na nuvem para armazenamento, visualização e an�
   
 ![image](https://github.com/user-attachments/assets/3a95386c-4dde-4851-ae51-c6e4faa60018)
 
-## Wokwi com Node-RED via MQTT
+## ☁️ Wokwi com Node-RED via MQTT
 O MQTT (Message Queuing Telemetry Transport) é um protocolo leve de mensagens usado em IoT. Ele é baseado no modelo publicador/assinante:
 - O dispositivo (ESP32) publica mensagens em um tópico.
 - Node-RED (ou outro cliente) assina esse tópico e recebe os dados.
@@ -80,6 +80,58 @@ O MQTT (Message Queuing Telemetry Transport) é um protocolo leve de mensagens u
 
 ### Fluxo Node-RED
 ![image](https://github.com/user-attachments/assets/78af34a9-e58f-4dfd-ad16-33cce06ad230)
+### Dashboard
+![image](https://github.com/user-attachments/assets/743804f1-669d-4db2-ac3a-459c539ad1dc)
+
+## Código-fonte
+Este projeto utiliza um **ESP32**, um **sensor ultrassônico**, um **display LCD**, **LEDs indicadores**, **RTC** e conexão **Wi-Fi** para monitorar o nível de água em um reservatório, exibindo os dados localmente e enviando-os para a plataforma **ThingSpeak**.
+---
+## ⚙️ Componentes Utilizados
+
+- ESP32
+- Sensor Ultrassônico (HC-SR04)
+- Display LCD 16x2 com interface I2C
+- RTC (Real Time Clock) DS3231
+- LEDs (verde, amarelo, vermelho)
+- Conexão Wi-Fi
+- Plataforma ThingSpeak
+---
+## ⚙️ Bibliotecas Utilizadas
+
+- `Wire.h` - Comunicação I2C
+- `LiquidCrystal_I2C.h` - Controle do display LCD
+- `RTClib.h` - Controle do RTC
+- `WiFi.h` - Conexão com a rede Wi-Fi
+- `HTTPClient.h` - Envio de dados via HTTP
+---
+## ⚙️ Funcionamento
+
+1. O **sensor ultrassônico** mede a distância da água até o topo do reservatório.
+2. A altura da água é usada para calcular o **volume** em litros.
+3. Os dados são:
+   - Exibidos em tempo real no **display LCD**;
+   - Indicados por **LEDs**:
+     - Verde: até 200 cm
+     - Amarelo: até 300 cm
+     - Vermelho: acima de 300 cm
+   - Enviados para o **ThingSpeak** com horário atual via RTC.
+---
+## ⚙️ ThingSpeak
+O projeto envia os seguintes dados para o ThingSpeak:
+- `field1`: Nível da água (cm)
+- `field2`: Volume calculado (litros)
+- `field3`: Horário da medição
+- `field4`: Repetição do nível (pode ser usado como gauge)
+**API Key:** `N18H1NFNM1SSJCND`
+---
+## ⚙️ Fórmulas utilizadas
+### Volume do reservatório (cilindro):
+```cpp
+volume_cm3 = π * raio² * altura
+volume_litros = volume_cm3 / 1000
+```
+
+
 
 
 

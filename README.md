@@ -30,4 +30,61 @@ O Wokwi permite simular projetos com ESP32 de forma realista. Ambos os códigos 
 | LEDs (verde, amarelo, vermelho) | Indicação visual do nível        |
 | RTC DS3231                      | Registro do horário das medições |
 
+![image](https://github.com/user-attachments/assets/3dbe4626-52d9-4bcb-b4a3-86c8c1ed90f7)
+
+## 📡 Wokwi com ThingSpeak (via HTTP)
+O ThingSpeak é uma plataforma na nuvem para armazenamento, visualização e análise de dados IoT. Ele permite que você crie "canais" para receber dados de sensores em tempo real, sem necessidade de um servidor próprio.
+### Como o projeto funciona com o ThingSpeak no Wokwi:
+#### Simulação no Wokwi:
+- O ESP32 é simulado com sensores como HC-SR04 (ultrassônico), RTC DS3231 e display LCD.
+- O código coleta o nível da água, calcula o volume e obtém o horário atual.
+#### Conexão com Wi-Fi:
+- O ESP32 (virtual) se conecta à rede simulada do Wokwi (Wokwi-GUEST), que não exige senha.
+- Essa rede permite conexões reais de internet, inclusive para serviços externos como ThingSpeak.
+#### Envio de dados via HTTP GET:
+- O código monta uma URL com os valores coletados (nível, volume, horário etc.).
+- Usa a biblioteca HTTPClient para enviar uma requisição HTTP GET para o endpoint da ThingSpeak.
+  
+![image](https://github.com/user-attachments/assets/3a95386c-4dde-4851-ae51-c6e4faa60018)
+
+## Wokwi com Node-RED via MQTT
+O MQTT (Message Queuing Telemetry Transport) é um protocolo leve de mensagens usado em IoT. Ele é baseado no modelo publicador/assinante:
+- O dispositivo (ESP32) publica mensagens em um tópico.
+- Node-RED (ou outro cliente) assina esse tópico e recebe os dados.
+### Como funciona a comunicação Wokwi → Node-RED (via HiveMQ):
+#### ESP32 simulado no Wokwi:
+- Coleta os dados como na versão anterior.
+- Em vez de enviar via HTTP, ele publica via MQTT no tópico:
+> globalsolution/medidor/nivel
+#### Broker MQTT (HiveMQ):
+- Utiliza o broker público da HiveMQ (broker.hivemq.com) na porta 1883.
+- Serve como ponto de encontro entre o ESP32 e o Node-RED.
+#### Node-RED:
+- Conecta-se ao mesmo broker MQTT.
+- Usa um nó mqtt in para assinar o tópico globalsolution/medidor/nivel.
+- Recebe mensagens no formato JSON, como:
+  
+```json
+{
+  "nivel_cm": 150,
+  "volume_litros": 11780,
+  "distancia_cm": 150,
+  "horario": "13:15:20"
+}
+```
+#### Dashboard no Node-RED:
+- Um nó function separa o JSON em 3 fluxos.
+- Os dados são exibidos em widgets:
+  - Gauge (volume)
+  - Textos (nível e horário)
+
+### Fluxo Node-RED
+![image](https://github.com/user-attachments/assets/78af34a9-e58f-4dfd-ad16-33cce06ad230)
+
+
+
+
+
+
+
 
